@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
                     superHeros = response.body().getData().getResults();
 
-                    Toast.makeText(MainActivity.this, "Hero Name: " + superHeros.get(0).getName(), Toast.LENGTH_SHORT).show();
 
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList(HERO_LIST, superHeros);
