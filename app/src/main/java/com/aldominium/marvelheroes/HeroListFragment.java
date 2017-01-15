@@ -3,6 +3,7 @@ package com.aldominium.marvelheroes;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 
 
 public class HeroListFragment extends Fragment {
+
+    private static final String TAG = HeroListFragment.class.getSimpleName();
 
     ArrayList<SuperHero> superHeroes;
 
@@ -28,10 +31,15 @@ public class HeroListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         Bundle bundle = getArguments();
+
+
         superHeroes = bundle.getParcelableArrayList(MainActivity.HERO_LIST);
 
-        Toast.makeText(getContext(), "El primer superheroe es: " + superHeroes.get(0).getName(), Toast.LENGTH_SHORT).show();
+        if (superHeroes == null)
+            Log.d(TAG, "No hay superheroes en el bundle");
+
 
     }
 
