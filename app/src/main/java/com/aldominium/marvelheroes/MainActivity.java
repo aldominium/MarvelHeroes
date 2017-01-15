@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         frameLayout = (FrameLayout) findViewById(R.id.placeholder);
 
 
-        
+
 
     }
 }
