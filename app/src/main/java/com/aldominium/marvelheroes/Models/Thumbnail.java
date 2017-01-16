@@ -24,6 +24,12 @@ public class Thumbnail {
         this.extension = extension;
     }
 
+    public String getFullPath(){
+        return path + "." + extension;
+
+
+    }
+
 
 
 }
