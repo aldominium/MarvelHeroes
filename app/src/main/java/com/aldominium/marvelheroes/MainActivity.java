@@ -1,10 +1,13 @@
 package com.aldominium.marvelheroes;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -38,6 +41,14 @@ public class MainActivity extends AppCompatActivity {
 
         frameLayout = (FrameLayout) findViewById(R.id.placeholder);
 
+        getHeroList();
+
+
+
+    }
+
+
+    private void getHeroList(){
 
         Call<Basic<Data<ArrayList<SuperHero>>>> superHeroesCall = MarvelService.getMarvelApi().getHeroes(AVENGERS_COMIC_ID);
 
@@ -54,16 +65,32 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putParcelableArrayList(HERO_LIST, superHeros);
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    HeroListFragment heroListFragment = new HeroListFragment();
-                    heroListFragment.setArguments(bundle);
-                    fragmentTransaction.add(R.id.placeholder,heroListFragment, HERO_LIST_FRAGMENT);
-                    fragmentTransaction.commit();
+
+                    boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+
+                    if (isTablet){
+                        Toast.makeText(MainActivity.this, "Esta es una tablet", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(MainActivity.this, "Este es un telefono", Toast.LENGTH_SHORT).show();
+                    }
+
+                    HeroListFragment savedFragment = (HeroListFragment) fragmentManager.findFragmentByTag(HERO_LIST_FRAGMENT);
+
+                    if (savedFragment == null){
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        HeroListFragment heroListFragment = new HeroListFragment();
+                        heroListFragment.setArguments(bundle);
+                        fragmentTransaction.add(R.id.placeholder,heroListFragment, HERO_LIST_FRAGMENT);
+                        fragmentTransaction.commit();
+                    }
+
+
 
 
                 }else {
 
-                    Log.d(TAG, "Error en la respuesta");
+
+                    displayErrorMessage(getString(R.string.service_error_message));
 
 
                 }
@@ -76,17 +103,29 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Basic<Data<ArrayList<SuperHero>>>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Error en la llamada", Toast.LENGTH_SHORT).show();
+
+                displayErrorMessage(getString(R.string.network_error_message));
+
 
             }
         });
 
+    }
 
 
 
+    public void displayErrorMessage(String mensaje){
+        Snackbar snackbar = Snackbar.make(frameLayout,mensaje,Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(R.string.Ok), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getHeroList();
+                    }
+                });
 
-
-
+        snackbar.show();
 
     }
+
+
 }
